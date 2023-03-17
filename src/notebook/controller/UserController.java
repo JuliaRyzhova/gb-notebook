@@ -1,18 +1,15 @@
 package notebook.controller;
 
 import notebook.model.User;
-import notebook.repository.GBRepository;
+import notebook.model.repository.GBRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class UserController {
-    private final GBRepository<User, Long> repository;
+    private final GBRepository repository;
 
-
-
-    public UserController(GBRepository<User, Long> repository) {
+    public UserController(GBRepository repository) {
         this.repository = repository;
     }
 
@@ -27,24 +24,19 @@ public class UserController {
                 return user;
             }
         }
-
         throw new RuntimeException("User not found");
-    }
-
-    public User findUserById(long id) {
-        return repository.findById(id).orElseThrow(()-> new RuntimeException("User not found."));
     }
 
     public List<User> getAllUsers() {
         return repository.findAll();
     }
 
-    public boolean userUpdate(long id, User update) {
-        try {
-            repository.update(id, update);
-            return true;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public void updateUser(String userId, User update) {
+        update.setId(Long.parseLong(userId));
+        repository.update(Long.parseLong(userId), update);
+    }
+
+    public void deleteUser(String userId) {
+        repository.delete(Long.parseLong(userId));
     }
 }

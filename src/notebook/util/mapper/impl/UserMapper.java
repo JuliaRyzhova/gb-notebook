@@ -1,6 +1,6 @@
-package notebook.mapper.impl;
+package notebook.util.mapper.impl;
 
-import notebook.mapper.Mapper;
+import notebook.util.mapper.Mapper;
 import notebook.model.User;
 
 public class UserMapper implements Mapper<User, String> {
@@ -11,7 +11,7 @@ public class UserMapper implements Mapper<User, String> {
 
     @Override
     public User toOutput(String s) {
-        String[] lines = s.split(";");
+        String[] lines = s.split(",");
         long id;
         if (isDigit(lines[0])) {
             id = Long.parseLong(lines[0]);

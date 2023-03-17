@@ -1,6 +1,6 @@
-package notebook.dao.impl;
+package notebook.model.dao.impl;
 
-import notebook.dao.Operation;
+import notebook.model.dao.Operation;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -23,17 +23,17 @@ public class FileOperation implements Operation<String> {
         List<String> lines = new ArrayList<>();
         try {
             File file = new File(fileName);
-            //создаем объект FileReader для объекта File
+            //??????? ?????? FileReader ??? ??????? File
             FileReader fr = new FileReader(file);
-            //создаем BufferedReader с существующего FileReader для построчного считывания
+            //??????? BufferedReader ? ????????????? FileReader ??? ??????????? ??????????
             BufferedReader reader = new BufferedReader(fr);
-            // считаем сначала первую строку
+            // ??????? ??????? ?????? ??????
             String line = reader.readLine();
             if (line != null) {
                 lines.add(line);
             }
             while (line != null) {
-                // считываем остальные строки в цикле
+                // ????????? ????????? ?????? ? ?????
                 line = reader.readLine();
                 if (line != null) {
                     lines.add(line);
@@ -50,9 +50,9 @@ public class FileOperation implements Operation<String> {
     public void saveAll(List<String> data) {
         try (FileWriter writer = new FileWriter(fileName, false)) {
             for (String line : data) {
-                // запись всей строки
+                // ?????? ???? ??????
                 writer.write(line);
-                // запись по символам
+                // ?????? ?? ????????
                 writer.append('\n');
             }
             writer.flush();
