@@ -71,13 +71,8 @@ public class UserRepository implements GBRepository<User, Long> {
                 .filter(u -> u.getId()
                         .equals(userId))
                 .findFirst().orElseThrow(() -> new RuntimeException("User not found"));
-        List<User> usersAfterDelete = new ArrayList<>();
-        for (User u: users) {
-            if (u != deleteUser){
-                usersAfterDelete.add(u);
-            }
-        }
-        write(usersAfterDelete);
+        users.remove(deleteUser);
+        write(users);
         return true;
     }
 
