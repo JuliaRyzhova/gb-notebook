@@ -4,7 +4,6 @@ import notebook.controller.UserController;
 import notebook.model.User;
 import notebook.util.Commands;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
