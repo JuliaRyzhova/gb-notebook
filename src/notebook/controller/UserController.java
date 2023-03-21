@@ -5,7 +5,6 @@ import notebook.model.repository.GBRepository;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 public class UserController {
     private final GBRepository repository;

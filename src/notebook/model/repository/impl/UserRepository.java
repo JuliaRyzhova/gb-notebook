@@ -1,15 +1,14 @@
 package notebook.model.repository.impl;
 
+import notebook.model.User;
 import notebook.model.dao.impl.FileOperation;
+import notebook.model.repository.GBRepository;
 import notebook.util.logger.Log;
 import notebook.util.mapper.impl.UserMapper;
-import notebook.model.User;
-import notebook.model.repository.GBRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
