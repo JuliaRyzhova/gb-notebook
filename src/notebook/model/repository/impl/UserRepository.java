@@ -1,6 +1,7 @@
 package notebook.model.repository.impl;
 
 import notebook.model.dao.impl.FileOperation;
+import notebook.util.logger.Log;
 import notebook.util.mapper.impl.UserMapper;
 import notebook.model.User;
 import notebook.model.repository.GBRepository;
@@ -8,10 +9,14 @@ import notebook.model.repository.GBRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UserRepository implements GBRepository<User, Long> {
     private final UserMapper mapper;
     private final FileOperation operation;
+    private static final Logger log = Log.log(UserRepository.class.getName());
 
     public UserRepository(FileOperation operation) {
         this.mapper = new UserMapper();
@@ -25,6 +30,7 @@ public class UserRepository implements GBRepository<User, Long> {
         for (String line : lines) {
             users.add(mapper.toOutput(line));
         }
+        log.log(Level.INFO, "Запрос всего списка контактов");
         return users;
     }
 
@@ -34,14 +40,16 @@ public class UserRepository implements GBRepository<User, Long> {
         long max = 0L;
         for (User u : users) {
             long id = u.getId();
-            if (max < id){
+            if (max < id) {
                 max = id;
             }
         }
         long next = max + 1;
         user.setId(next);
+        log.log(Level.INFO, "Назначен идентификатор  для нового контакта: " + next);
         users.add(user);
         write(users);
+        log.log(Level.INFO, "Новый контакт успешно создан");
         return user;
     }
 
@@ -53,34 +61,52 @@ public class UserRepository implements GBRepository<User, Long> {
     @Override
     public Optional<User> update(Long userId, User update) {
         List<User> users = findAll();
-        User editUser = users.stream()
-                .filter(u -> u.getId()
-                        .equals(userId))
-                .findFirst().orElseThrow(() -> new RuntimeException("User not found"));
+        User editUser = null;
+        for (User u : users) {
+            if (u.getId().equals(userId)) {
+                editUser = u;
+            }
+        }
+        if (editUser == null) {
+            log.log(Level.WARNING, "Контакт не найден. Отсутствует идентификатор: " + userId);
+            throw new NullPointerException("User not found");
+        }
         editUser.setFirstName(update.getFirstName());
         editUser.setLastName(update.getLastName());
         editUser.setPhone(update.getPhone());
         write(users);
+        log.log(Level.INFO, "Изменены данные контакта id: " + editUser.getId());
+        log.log(Level.INFO, "Имя контакта изменено на: " + editUser.getFirstName());
+        log.log(Level.INFO, "Фамилия контакта изменена на: " + editUser.getLastName());
+        log.log(Level.INFO, "Телефон контакта изменен на: " + editUser.getPhone());
         return Optional.of(update);
     }
 
     @Override
     public boolean delete(Long userId) {
         List<User> users = findAll();
-        User deleteUser = users.stream()
-                .filter(u -> u.getId()
-                        .equals(userId))
-                .findFirst().orElseThrow(() -> new RuntimeException("User not found"));
+        User deleteUser = null;
+        for (User u : users) {
+            if (u.getId().equals(userId)) {
+                deleteUser = u;
+            }
+        }
+        if (deleteUser == null) {
+            log.log(Level.WARNING, "Контакт не найден. Отсутствует id: " + userId);
+            throw new NullPointerException("User not found");
+        }
         users.remove(deleteUser);
+        log.log(Level.INFO, "Успешное удаление контакта id: " + deleteUser.getId());
         write(users);
         return true;
     }
 
     private void write(List<User> users) {
         List<String> lines = new ArrayList<>();
-        for (User u: users) {
+        for (User u : users) {
             lines.add(mapper.toInput(u));
         }
         operation.saveAll(lines);
+        log.log(Level.INFO, "Успешное сохранение");
     }
 }
