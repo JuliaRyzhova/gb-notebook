@@ -1,11 +1,11 @@
 package notebook.model.repository.impl;
 
 import notebook.model.User;
-import notebook.model.dao.impl.FileOperation;
-import notebook.model.repository.GBRepository;
+import notebook.model.repository.*;
 import notebook.util.logger.Log;
 import notebook.util.mapper.impl.UserMapper;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,17 +14,17 @@ import java.util.logging.Logger;
 
 public class UserRepository implements GBRepository<User, Long> {
     private final UserMapper mapper;
-    private final FileOperation operation;
+    private final String fileName;
     private static final Logger log = Log.log(UserRepository.class.getName());
 
-    public UserRepository(FileOperation operation) {
+    public UserRepository(UserMapper mapper, String fileName) {
         this.mapper = new UserMapper();
-        this.operation = operation;
+        this.fileName = fileName;
     }
 
     @Override
     public List<User> findAll() {
-        List<String> lines = operation.readAll();
+        List<String> lines = readAll();
         List<User> users = new ArrayList<>();
         for (String line : lines) {
             users.add(mapper.toOutput(line));
@@ -45,7 +45,7 @@ public class UserRepository implements GBRepository<User, Long> {
         }
         long next = max + 1;
         user.setId(next);
-        log.log(Level.INFO, "Назначен идентификатор  для нового контакта: " + next);
+        log.log(Level.INFO, "Назначен идентификатор для нового контакта: " + next);
         users.add(user);
         write(users);
         log.log(Level.INFO, "Новый контакт успешно создан");
@@ -105,7 +105,43 @@ public class UserRepository implements GBRepository<User, Long> {
         for (User u : users) {
             lines.add(mapper.toInput(u));
         }
-        operation.saveAll(lines);
+        saveAll(lines);
         log.log(Level.INFO, "Успешное сохранение");
     }
+
+    public List<String> readAll() {
+        List<String> lines = new ArrayList<>();
+        try {
+            File file = new File(fileName);
+            FileReader fr = new FileReader(file);
+            BufferedReader reader = new BufferedReader(fr);
+            String line = reader.readLine();
+            if (line != null) {
+                lines.add(line);
+            }
+            while (line != null) {
+                line = reader.readLine();
+                if (line != null) {
+                    lines.add(line);
+                }
+            }
+            fr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lines;
+    }
+
+    public void saveAll(List<String> data) {
+        try (FileWriter writer = new FileWriter(fileName, false)) {
+            for (String line : data) {
+                writer.write(line);
+                writer.append('\n');
+            }
+            writer.flush();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 }

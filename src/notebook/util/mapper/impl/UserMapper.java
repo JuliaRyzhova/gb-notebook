@@ -1,9 +1,10 @@
 package notebook.util.mapper.impl;
 
-import notebook.util.mapper.Mapper;
 import notebook.model.User;
+import notebook.util.mapper.Inputable;
+import notebook.util.mapper.Outputable;
 
-public class UserMapper implements Mapper<User, String> {
+public class UserMapper implements Inputable<User, String>, Outputable<User, String> {
     @Override
     public String toInput(User user) {
         return String.format("%s,%s,%s,%s", user.getId(), user.getFirstName(), user.getLastName(), user.getPhone());
@@ -19,8 +20,8 @@ public class UserMapper implements Mapper<User, String> {
         }
         throw new NumberFormatException("Id must be a large number");
     }
-
-    private boolean isDigit(String s) throws NumberFormatException {
+    @Override
+    public boolean isDigit(String s) throws NumberFormatException {
         try {
             Long.parseLong(s);
             return true;
