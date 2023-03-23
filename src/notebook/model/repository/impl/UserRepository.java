@@ -109,6 +109,7 @@ public class UserRepository implements GBRepository<User, Long> {
         log.log(Level.INFO, "Успешное сохранение");
     }
 
+    @Override
     public List<String> readAll() {
         List<String> lines = new ArrayList<>();
         try {
@@ -132,6 +133,7 @@ public class UserRepository implements GBRepository<User, Long> {
         return lines;
     }
 
+    @Override
     public void saveAll(List<String> data) {
         try (FileWriter writer = new FileWriter(fileName, false)) {
             for (String line : data) {
