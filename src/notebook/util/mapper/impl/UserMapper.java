@@ -15,13 +15,13 @@ public class UserMapper implements Mapper<User, String> {
         long id;
         if (isDigit(lines[0])) {
             id = Long.parseLong(lines[0]);
-            User u = new User.UserBuilder()
+            User user = new User.UserBuilder()
                     .id(id)
                     .firstName(lines[1])
                     .lastName(lines[2])
                     .phone(lines[3])
                     .build();
-            return u;
+            return user;
         }
         throw new NumberFormatException("Id must be a large number");
     }
