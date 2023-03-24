@@ -61,10 +61,12 @@ public class UserView {
     }
 
     private User createUser() {
-        String firstName = prompt("Имя: ");
-        String lastName = prompt("Фамилия: ");
-        String phone = prompt("Номер телефона: ");
-        return new User(firstName, lastName, phone);
+        User u = new User.UserBuilder()
+                .firstName(prompt("Имя: "))
+                .lastName(prompt("Фамилия: "))
+                .phone(prompt("Номер телефона: "))
+                .build();
+        return u;
     }
 }
 

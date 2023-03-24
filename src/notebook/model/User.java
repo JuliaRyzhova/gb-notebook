@@ -6,16 +6,48 @@ public class User {
     private String lastName;
     private String phone;
 
-    public User(String firstName, String lastName, String phone) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
+    private User(UserBuilder userBuilder) {
+        this.id = userBuilder.id;
+        this.firstName = userBuilder.firstName;
+        this.lastName = userBuilder.lastName;
+        this.phone = userBuilder.phone;
     }
 
-    public User(Long id, String firstName, String lastName, String phone) {
-        this(firstName, lastName, phone);
-        this.id = id;
+    public static UserBuilder builder() {
+        return new UserBuilder();
     }
+
+    public static class UserBuilder {
+        private Long id;
+        private String firstName;
+        private String lastName;
+        private String phone;
+
+        public UserBuilder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public UserBuilder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public UserBuilder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+        public UserBuilder phone(String phone) {
+            this.phone = phone;
+            return this;
+        }
+
+        public User build() {
+            return new User(this);
+        }
+    }
+
 
     public Long getId() {
         return id;
